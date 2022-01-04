@@ -14,4 +14,4 @@ You need a slack user token, see [this stackoverflow answer](https://stackoverfl
 
 ## limitations
 
-Only the first 1000 channels are considered.
+Only the first 1000 channels of your workspace are considered, even if you aren't in a channel.
