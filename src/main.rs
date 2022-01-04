@@ -11,15 +11,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .filter(|c| {
             c["is_channel"].as_bool().unwrap()
         })
-        .flat_map(|c| {
-            c["id"].as_str()
+        .map(|c| {
+            (c["id"].as_str().unwrap(), c["name"].as_str().unwrap())
         })
-        .collect::<Vec<&str>>();
-    println!("{:#?}", resp);
+        .collect::<Vec<(&str, &str)>>();
 
     for channel in resp {
-        let _ = leave_channel(token.as_str(), channel).await?;
-        println!("leaving {}", channel);
+        let _ = leave_channel(token.as_str(), channel.0).await?;
+        println!("leaving #{}", channel.1);
     }
     Ok(())
 }
@@ -29,7 +28,7 @@ async fn leave_channel(token: &str, channel: &str) -> Result<serde_json::Value, 
 }
 
 async fn list_channels(token: &str) -> Result<serde_json::Value, reqwest::Error> {
-    slack_post(token,&[("1", 0)], "conversations.list").await
+    slack_post(token, &[("limit", 1000)], "conversations.list").await
 }
 
 async fn slack_post<T: Serialize + ?Sized>(token: &str, data: &T, method: &str) -> Result<serde_json::Value, reqwest::Error> {
