@@ -11,3 +11,7 @@ cargo run
 ```
 
 You need a slack user token, see [this stackoverflow answer](https://stackoverflow.com/a/67795540) on how to get one.
+
+## limitations
+
+Only the first 1000 channels are considered.
