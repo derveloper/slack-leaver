@@ -38,7 +38,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-async fn leave_channel(token: &str, channel: String) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
+async fn leave_channel(
+    token: &str,
+    channel: String,
+) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
     slack_post(token, &[("channel", channel)], "conversations.leave").await
 }
 
@@ -54,8 +57,10 @@ async fn list_channels(token: &str) -> Result<Vec<(String, String)>, Box<dyn std
     while {
         let resp = slack_post(token, &params, "conversations.list").await?;
 
-        let nc = resp["response_metadata"]["next_cursor"].as_str()
-            .map(|n| if n == "" { None } else { Some(n) }).flatten();
+        let nc = resp["response_metadata"]["next_cursor"]
+            .as_str()
+            .map(|n| if n == "" { None } else { Some(n) })
+            .flatten();
         if let Some(_next_cursor) = nc {
             next_cursor = Some(_next_cursor.to_string());
             params.insert("cursor".to_string(), _next_cursor.to_string());
@@ -64,15 +69,21 @@ async fn list_channels(token: &str) -> Result<Vec<(String, String)>, Box<dyn std
         }
         let chan_resp = resp["channels"].as_array();
         if let Some(next_channels) = chan_resp {
-            let next_channels = next_channels.iter()
+            let next_channels = next_channels
+                .iter()
                 .filter(|c| {
                     let is_channel = c["is_channel"].as_bool().unwrap_or(false);
                     let is_member = c["is_member"].as_bool().unwrap_or(false);
                     let name = c["name"].as_str().unwrap_or("unknown");
                     is_channel && is_member && name != "general"
-                }).map(|c| {
-                (c["id"].as_str().unwrap().to_string(), c["name"].as_str().unwrap().to_string())
-            }).collect::<Vec<(String, String)>>();
+                })
+                .map(|c| {
+                    (
+                        c["id"].as_str().unwrap().to_string(),
+                        c["name"].as_str().unwrap().to_string(),
+                    )
+                })
+                .collect::<Vec<(String, String)>>();
             channels = [channels, next_channels].concat();
         } else {
             next_cursor = None;
@@ -88,7 +99,11 @@ async fn list_channels(token: &str) -> Result<Vec<(String, String)>, Box<dyn std
     Ok(channels)
 }
 
-async fn slack_post<T: Serialize + ?Sized>(token: &str, data: &T, method: &str) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
+async fn slack_post<T: Serialize + ?Sized>(
+    token: &str,
+    data: &T,
+    method: &str,
+) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
     let url = format!("{}{}", "https://slack.com/api/", method);
     let resp = reqwest::Client::new()
         .post(url)
