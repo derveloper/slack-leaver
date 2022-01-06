@@ -1,5 +1,7 @@
 [package]
 name = "slack-leaver"
+authors = ["Tristan Leo <vileda@vileda.cc>"]
+homepage = "https://github.com/derveloper/slack-leaver"
 version = "0.1.0"
 edition = "2021"
 
