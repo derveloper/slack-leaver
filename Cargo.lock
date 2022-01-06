@@ -815,7 +815,7 @@ checksum = "9def91fd1e018fe007022791f865d0ccc9b3a0d5001e01aabb8b40e46000afb5"
 
 [[package]]
 name = "slack-leaver"
-version = "0.1.0"
+version = "2022.1.1"
 dependencies = [
  "clap",
  "openssl",
