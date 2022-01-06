@@ -2,7 +2,7 @@
 name = "slack-leaver"
 authors = ["Tristan Leo <vileda@vileda.cc>"]
 homepage = "https://github.com/derveloper/slack-leaver"
-version = "0.1.0"
+version = "2022.6"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
