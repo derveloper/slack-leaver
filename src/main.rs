@@ -98,9 +98,9 @@ async fn slack_post<T: Serialize + ?Sized>(token: &str, data: &T, method: &str) 
         .await?;
 
     let slack_json: Value = resp.json().await?;
-    if !slack_json["ok"].as_bool().unwrap_or(false) {
-        Err(slack_json["error"].as_str().unwrap_or("unknown").into())
-    } else {
+    if slack_json["ok"].as_bool().unwrap_or(false) {
         Ok(slack_json)
+    } else {
+        Err(slack_json["error"].as_str().unwrap_or("unknown").into())
     }
 }
