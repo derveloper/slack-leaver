@@ -190,55 +190,6 @@ jobs:
           command: test
           args: --locked --target=${{ matrix.job.target }} ${{ steps.test-options.outputs.CARGO_TEST_OPTIONS}}
 
-      - name: Run slack-leaver
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: ${{ matrix.job.use-cross }}
-          command: run
-          args: --locked --target=${{ matrix.job.target }} -- --paging=never --color=always --theme=ansi Cargo.toml src/config.rs
-
-      - name: Show diagnostics (slack-leaver --diagnostic)
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: ${{ matrix.job.use-cross }}
-          command: run
-          args: --locked --target=${{ matrix.job.target }} -- --paging=never --color=always --theme=ansi Cargo.toml src/config.rs --diagnostic
-
-      - name: "Feature check: regex-onig"
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: ${{ matrix.job.use-cross }}
-          command: check
-          args: --locked --target=${{ matrix.job.target }} --verbose --lib --no-default-features --features regex-onig
-
-      - name: "Feature check: regex-onig,git"
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: ${{ matrix.job.use-cross }}
-          command: check
-          args: --locked --target=${{ matrix.job.target }} --verbose --lib --no-default-features --features regex-onig,git
-
-      - name: "Feature check: regex-onig,paging"
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: ${{ matrix.job.use-cross }}
-          command: check
-          args: --locked --target=${{ matrix.job.target }} --verbose --lib --no-default-features --features regex-onig,paging
-
-      - name: "Feature check: regex-onig,git,paging"
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: ${{ matrix.job.use-cross }}
-          command: check
-          args: --locked --target=${{ matrix.job.target }} --verbose --lib --no-default-features --features regex-onig,git,paging
-
-      - name: "Feature check: minimal-application"
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: ${{ matrix.job.use-cross }}
-          command: check
-          args: --locked --target=${{ matrix.job.target }} --verbose --no-default-features --features minimal-application
-
       - name: Create tarball
         id: package
         shell: bash
