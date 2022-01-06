@@ -68,12 +68,12 @@ async fn list_channels(token: &str) -> Result<Vec<(String, String)>, Box<dyn std
                 .filter(|c| {
                     let is_channel = c["is_channel"].as_bool().unwrap_or(false);
                     let is_member = c["is_member"].as_bool().unwrap_or(false);
-                    is_channel && is_member
+                    let name = c["name"].as_str().unwrap_or("unknown");
+                    is_channel && is_member && name != "general"
                 }).map(|c| {
                 (c["id"].as_str().unwrap().to_string(), c["name"].as_str().unwrap().to_string())
             }).collect::<Vec<(String, String)>>();
             channels = [channels, next_channels].concat();
-            channels.dedup();
         } else {
             next_cursor = None;
         }
