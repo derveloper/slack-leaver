@@ -202,23 +202,13 @@ jobs:
           PKG_STAGING="${{ env.CICD_INTERMEDIATES_DIR }}/package"
           ARCHIVE_DIR="${PKG_STAGING}/${PKG_BASENAME}/"
           mkdir -p "${ARCHIVE_DIR}"
-          mkdir -p "${ARCHIVE_DIR}/autocomplete"
           
           # Binary
           cp "${{ steps.strip.outputs.BIN_PATH }}" "$ARCHIVE_DIR"
-          
-          # Man page
-          cp 'target/${{ matrix.job.target }}/release/build/${{ env.PROJECT_NAME }}'-*/out/assets/manual/slack-leaver.1 "$ARCHIVE_DIR"
-          
-          # README, LICENSE and CHANGELOG files
-          cp "README.md" "LICENSE-MIT" "LICENSE-APACHE" "CHANGELOG.md" "$ARCHIVE_DIR"
-          
-          # Autocompletion files
-          cp 'target/${{ matrix.job.target }}/release/build/${{ env.PROJECT_NAME }}'-*/out/assets/completions/slack-leaver.bash "$ARCHIVE_DIR/autocomplete/${{ env.PROJECT_NAME }}.bash"
-          cp 'target/${{ matrix.job.target }}/release/build/${{ env.PROJECT_NAME }}'-*/out/assets/completions/slack-leaver.fish "$ARCHIVE_DIR/autocomplete/${{ env.PROJECT_NAME }}.fish"
-          cp 'target/${{ matrix.job.target }}/release/build/${{ env.PROJECT_NAME }}'-*/out/assets/completions/_slack-leaver.ps1 "$ARCHIVE_DIR/autocomplete/_${{ env.PROJECT_NAME }}.ps1"
-          cp 'target/${{ matrix.job.target }}/release/build/${{ env.PROJECT_NAME }}'-*/out/assets/completions/slack-leaver.zsh "$ARCHIVE_DIR/autocomplete/${{ env.PROJECT_NAME }}.zsh"
-          
+
+          # README and LICENSE
+          cp "README.md" "LICENSE"
+
           # base compressed package
           pushd "${PKG_STAGING}/" >/dev/null
           case ${{ matrix.job.target }} in
@@ -235,7 +225,7 @@ jobs:
         shell: bash
         if: startsWith(matrix.job.os, 'ubuntu')
         run: |
-          COPYRIGHT_YEARS="2018 - "$(date "+%Y")
+          COPYRIGHT_YEARS="2022 - "$(date "+%Y")
           DPKG_STAGING="${{ env.CICD_INTERMEDIATES_DIR }}/debian-package"
           DPKG_DIR="${DPKG_STAGING}/dpkg"
           mkdir -p "${DPKG_DIR}"
@@ -259,21 +249,10 @@ jobs:
           
           # Binary
           install -Dm755 "${{ steps.strip.outputs.BIN_PATH }}" "${DPKG_DIR}/usr/bin/${{ steps.strip.outputs.BIN_NAME }}"
-          
-          # Man page
-          install -Dm644 'target/${{ matrix.job.target }}/release/build/${{ env.PROJECT_NAME }}'-*/out/assets/manual/slack-leaver.1 "${DPKG_DIR}/usr/share/man/man1/${{ env.PROJECT_NAME }}.1"
-          gzip -n --best "${DPKG_DIR}/usr/share/man/man1/${{ env.PROJECT_NAME }}.1"
-          
-          # Autocompletion files
-          install -Dm644 'target/${{ matrix.job.target }}/release/build/${{ env.PROJECT_NAME }}'-*/out/assets/completions/slack-leaver.bash "${DPKG_DIR}/usr/share/bash-completion/completions/${{ env.PROJECT_NAME }}"
-          install -Dm644 'target/${{ matrix.job.target }}/release/build/${{ env.PROJECT_NAME }}'-*/out/assets/completions/slack-leaver.fish "${DPKG_DIR}/usr/share/fish/vendor_completions.d/${{ env.PROJECT_NAME }}.fish"
-          install -Dm644 'target/${{ matrix.job.target }}/release/build/${{ env.PROJECT_NAME }}'-*/out/assets/completions/slack-leaver.zsh "${DPKG_DIR}/usr/share/zsh/vendor-completions/_${{ env.PROJECT_NAME }}"
-          
+
           # README and LICENSE
           install -Dm644 "README.md" "${DPKG_DIR}/usr/share/doc/${DPKG_BASENAME}/README.md"
-          install -Dm644 "LICENSE-MIT" "${DPKG_DIR}/usr/share/doc/${DPKG_BASENAME}/LICENSE-MIT"
-          install -Dm644 "LICENSE-APACHE" "${DPKG_DIR}/usr/share/doc/${DPKG_BASENAME}/LICENSE-APACHE"
-          install -Dm644 "CHANGELOG.md" "${DPKG_DIR}/usr/share/doc/${DPKG_BASENAME}/changelog"
+          install -Dm644 "LICENSE" "${DPKG_DIR}/usr/share/doc/${DPKG_BASENAME}/LICENSE"
           gzip -n --best "${DPKG_DIR}/usr/share/doc/${DPKG_BASENAME}/changelog"
           
           cat > "${DPKG_DIR}/usr/share/doc/${DPKG_BASENAME}/copyright" <<EOF
@@ -304,8 +283,8 @@ jobs:
           Architecture: ${DPKG_ARCH}
           Provides: ${{ env.PROJECT_NAME }}
           Conflicts: ${DPKG_CONFLICTS}
-          Description: cat(1) clone with wings.
-            A cat(1) clone with syntax highlighting and Git integration.
+          Description: leave all slack channels at once.
+            leave all slack channels at once.
           EOF
           
           DPKG_PATH="${DPKG_STAGING}/${DPKG_NAME}"
