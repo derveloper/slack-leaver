@@ -6,6 +6,10 @@ ever wanted to leave all slack channels? now you can!
 
 ## usage
 
+Head to the [Releases](https://github.com/derveloper/slack-leaver/releases) page, pick a release that matches your platform.
+
+### from source
+
 ```shell
 git clone git@github.com:derveloper/slack-leaver.git
 cd slack-leaver
