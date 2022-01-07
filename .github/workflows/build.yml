@@ -8,10 +8,8 @@ on:
   workflow_dispatch:
   pull_request:
   push:
-    branches:
-      - main
     tags:
-      - '*'
+      - 'v*'
 
 jobs:
   ensure_cargo_fmt:
