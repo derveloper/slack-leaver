@@ -1,3 +1,5 @@
+![CICD](https://github.com/derveloper/slack-leaver/actions/workflows/build.yml/badge.svg)
+
 # slack-leaver
 
 ever wanted to leave all slack channels? now you can!
