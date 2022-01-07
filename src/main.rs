@@ -10,7 +10,7 @@ use serde_json;
 use serde_json::Value;
 
 #[derive(Parser, Debug)]
-#[clap(about)]
+#[clap(about, version, author)]
 struct Args {
     /// Actually leave
     #[clap(short, long)]
@@ -22,6 +22,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Args = Args::parse();
 
     let token = rpassword::read_password_from_tty(Some("Token (xoxp-...): ")).unwrap();
+
+    let _ = test_auth(token.as_str()).await?;
 
     let resp = list_channels(token.as_str()).await?;
     for channel in resp {
@@ -45,13 +47,19 @@ async fn leave_channel(
     slack_post(token, &[("channel", channel)], "conversations.leave").await
 }
 
+async fn test_auth(
+    token: &str,
+) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
+    slack_post(token, &[("test", "auth")], "auth.test").await
+}
+
 async fn list_channels(token: &str) -> Result<Vec<(String, String)>, Box<dyn std::error::Error>> {
     let mut next_cursor: Option<String>;
     let mut channels: Vec<(String, String)> = vec![];
     let mut params: HashMap<String, String> = HashMap::new();
     params.insert("limit".to_string(), "1000".to_string());
 
-    print!("Fetching");
+    print!("Fetching channels");
     io::stdout().flush().unwrap();
 
     while {
@@ -108,7 +116,7 @@ async fn slack_post<T: Serialize + ?Sized>(
     let resp = reqwest::Client::new()
         .post(url)
         .bearer_auth(token)
-        .form(data)
+        .form(&data)
         .send()
         .await?;
 
