@@ -47,9 +47,7 @@ async fn leave_channel(
     slack_post(token, &[("channel", channel)], "conversations.leave").await
 }
 
-async fn test_auth(
-    token: &str,
-) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
+async fn test_auth(token: &str) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
     slack_post(token, &[("test", "auth")], "auth.test").await
 }
 
