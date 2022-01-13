@@ -6,7 +6,7 @@ use std::time::Duration;
 
 use clap::Parser;
 use serde::Serialize;
-use serde_json;
+
 use serde_json::Value;
 
 #[derive(Parser, Debug)]
@@ -65,7 +65,7 @@ async fn list_channels(token: &str) -> Result<Vec<(String, String)>, Box<dyn std
 
         let nc = resp["response_metadata"]["next_cursor"]
             .as_str()
-            .map(|n| if n == "" { None } else { Some(n) })
+            .map(|n| if n.is_empty() { None } else { Some(n) })
             .flatten();
         if let Some(_next_cursor) = nc {
             next_cursor = Some(_next_cursor.to_string());
